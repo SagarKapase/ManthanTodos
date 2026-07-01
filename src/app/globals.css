@@ -1,26 +1,67 @@
 @import "tailwindcss";
 
+/* ---- Manthan design system (warm, Anthropic-inspired) ---- */
+@theme {
+  /* Surfaces */
+  --color-paper: #f4f1ea; /* app canvas — warm paper */
+  --color-surface: #fffefb; /* cards / raised surfaces */
+  --color-sidebar: #ece7dc; /* navigation rail */
+  --color-line: #e5e0d4; /* hairline borders */
+  --color-line-strong: #d8d2c4;
+
+  /* Ink */
+  --color-ink: #211f1b; /* primary text */
+  --color-muted: #6f6a60; /* secondary text */
+  --color-faint: #a49d90; /* tertiary / placeholders */
+
+  /* Brand accent — clay / terracotta */
+  --color-clay: #c15f3c;
+  --color-clay-dark: #a54d2f;
+  --color-clay-soft: #f2e3da;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Opt out of the browser's automatic dark-mode inversion. */
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-paper);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line bg-surface shadow-[0_1px_2px_rgba(33,31,27,0.04),0_1px_20px_rgba(33,31,27,0.03)];
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition
+      placeholder:text-faint focus:border-clay focus:ring-2 focus:ring-clay/15;
+  }
+
+  .field {
+    @apply rounded-lg border border-line bg-surface px-2.5 py-1.5 text-sm text-ink outline-none transition
+      focus:border-clay focus:ring-2 focus:ring-clay/15;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-clay px-4 py-2 text-sm font-medium text-white
+      shadow-sm transition hover:bg-clay-dark active:scale-[.99] disabled:opacity-60;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-muted
+      transition hover:bg-ink/5;
+  }
 }

@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Manthan
 
-## Getting Started
+A shared task & to-do workspace for small teams — Todoist-style, single-team, credential-based onboarding.
+Built from `Manthan_PRD.docx` v1.0. See **[PLAN.md](./PLAN.md)** for the full build plan and PRD → feature mapping.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) + TypeScript + Tailwind CSS
+- **Prisma 6** + SQLite (Postgres-ready)
+- **Auth**: JWT session in an httpOnly cookie (`jose`) + `bcryptjs` hashing, server-enforced role checks
+- Server Actions for all mutations
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npx prisma migrate dev      # create the SQLite DB + tables
+npm run db:seed             # seed admin + Inbox + sample projects
+npm run dev                 # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Demo login
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Field | Value |
+|-------|-------|
+| Username | `admin@manthan.app` |
+| Password | `admin123` |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The admin can create members under **Team**; each new member gets a temporary password and is forced to set their own on first login.
 
-## Learn More
+## What's implemented (Phase 1 MVP)
 
-To learn more about Next.js, take a look at the following resources:
+- **Auth**: login/logout, JWT sessions, first-login forced password change, change own password
+- **Admin**: create member accounts (temp password), reset password, deactivate/reactivate members
+- **Tasks**: quick-add, description/due date/priority (P1–P4)/project/assignee, complete/re-open, edit, delete (with confirm)
+- **Projects**: create/rename/delete, colours, archive; default **Inbox**
+- **Views**: Dashboard (counts), Today (+ overdue), My Tasks, Upcoming (grouped by day), per-project
+- **Shared workspace**: everyone sees all tasks/projects; in-app assignment notifications; responsive (mobile drawer)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Phase 2 + Todoist parity
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Task detail modal** — click any task to edit every field, manage **sub-tasks**, and post **comments**
+- **Labels** — create/colour labels, tag tasks, and browse via **Filters & Labels**
+- **Board view** — per-project **sections** with **drag-and-drop** (List/Board toggle)
+- **Search** and **Filters** (assignee / project / priority / label / status)
+- **Notifications inbox** with mark-as-read and a live sidebar badge
+- **Trash** — soft-delete with an **undo** toast, restore, or delete forever
+- **Idle sessions** — sliding expiry via `src/proxy.ts`; **team directory** visible to all members
 
-## Deploy on Vercel
+See `PLAN.md` for the full roadmap (Phase 3 nice-to-haves remain).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Script | Purpose |
+|--------|---------|
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm run db:seed` | Seed the database |
+| `npm run db:reset` | Reset DB + re-run migrations |
+
+## Data model
+
+`User`, `Project`, `Task` (with sub-tasks), `Label`, `Comment`, `Notification` — see `prisma/schema.prisma`, mapped from PRD §7.
+# ManthanTodos
